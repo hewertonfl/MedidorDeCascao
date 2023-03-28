@@ -40,7 +40,7 @@ card1 = html.Div([
     html.Img(src="./assets/images/youtube.png")
 ], className="card")
 card2 = html.Div([
-    html.Img(src="./assets/images/card2a.png")
+    html.Img(src="./assets/images/card2a.png", className="sidebar__img")
 ], className="card")
 card3 = html.Div([
     html.Img(src="./assets/images/card3.png")
