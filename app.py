@@ -1,5 +1,7 @@
 from dash import Dash, html, dcc, callback, Output, Input
 import dash_bootstrap_components as dbc
+from dash import dcc
+import plotly.graph_objs as go
 import plotly.express as px
 import pandas as pd
 
@@ -42,8 +44,14 @@ card1 = html.Div([
 card2 = html.Div([
     html.Img(src="./assets/images/card2a.png", className="sidebar__img")
 ], className="card")
+
+df = px.data.gapminder().query("country=='Canada'")
+fig = px.line(df, x="year", y="lifeExp",
+              title='Life expectancy in Canada', color='country', symbol="country")
+
 card3 = html.Div([
-    html.Img(src="./assets/images/card3.png")
+    dcc.Graph(id='my-graph', figure=fig, responsive=True,
+              style={"width": "100%", "height": "100%"})
 ], className="card2 sidebar__img")
 
 main = html.Div([
@@ -55,8 +63,23 @@ main = html.Div([
 app.layout = html.Div([
     html.Div([
         sidebar, main
-    ], className="desktop")
+    ], className="desktop"),
 ], className="container")
+
+
+# @app.callback(
+#     Output('my-graph', 'figure'),
+#     Input('dropdown', 'value')
+
+# )
+# def update_side_graph(input_data):
+#     grafico = {
+#         'data': [{'x': [1, 2, 3], 'y': [4, 1, 2], 'name':'Gráfico X'}],
+#         'layout': {
+#             'title': 'Dash Data Visualization'
+#         }
+#     }
+#     return grafico
 
 
 if __name__ == '__main__':
