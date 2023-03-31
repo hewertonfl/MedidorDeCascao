@@ -27,13 +27,13 @@ sidebar = html.Div([
                   style={"width": "9%"}), html.Button(
             "Iniciar Segmentação", className="sidebar__button__fonts")], className="sidebar__button sidebar__button__box"),
     html.Div(
-        [html.Img(src="./assets/images/oficina41.png",
+        [html.Img(src="./assets/images/oficinaC.png",
                   className="sidebar__img")], className="sidebar__logo", style={"height": "5%"}),
     html.Div(
-        [html.Img(src="./assets/images/arcelor_logo1.png",
+        [html.Img(src="./assets/images/arcelor_logo.png",
                   className="sidebar__img")], className="sidebar__logo", style={"height": "8%"}),
     html.Div(
-        [html.Img(src="./assets/images/ifes_logo.png",
+        [html.Img(src="./assets/images/ifes_logoC.png",
                   className="sidebar__img")], className="sidebar__logo", style={"height": "15%"}),
 ], className="sidebar")
 

@@ -35,18 +35,18 @@ span {
     background: #ffffff;
     border-radius: 2rem;
     box-sizing: border-box;
-    padding: 1%;
+    /* padding: 1%; */
     display: flex;
 }
 
 /* Sidebar */
 .sidebar {
     box-sizing: border-box;
-    background-color: #b9b9b9;
-    width: 30%;
+    background-color: #7ad05b;
+    width: 28%;
     height: 100%;
     padding: 1%;
-    border-radius: 1.54rem;
+    border-radius: 1.54rem 0 0 1.54rem;
     display: flex;
     align-items: center;
     flex-direction: column;
@@ -59,6 +59,7 @@ span {
     height: 10%;
     width: 80%;
     margin: auto;
+    margin-top: 12%;
     align-items: center;
 }
 
@@ -67,10 +68,11 @@ span {
     margin-left: 3.5%;
     font-size: 1.3rem;
     font-size: calc(2080 * 0.75vw / 1980);
+    color: white;
 }
 .sidebar__button {
     padding: 1rem;
-    background: #000000;
+    background: #38453b;
     border-radius: 1.54rem;
     display: flex;
     align-items: center;
@@ -91,7 +93,7 @@ span {
 }
 
 .sidebar__button__box {
-    width: 80%;
+    width: 60%;
     height: 3%;
     margin: auto;
 }
@@ -101,6 +103,9 @@ span {
     /* font-size: 2rem; */
     font-size: calc(3200 * 0.75vw / 1920);
     /* padding: 1.2rem; */
+    color: #38453b;
+    margin-bottom: 5%;
+    margin-top: 5%;
 }
 
 .sidebar__header {
@@ -147,7 +152,7 @@ span {
 }
 
 .card2 {
-    height: 39%;
+    height: 37%;
     width: 100%;
     border-radius: 1.54rem;
     box-sizing: border-box;
