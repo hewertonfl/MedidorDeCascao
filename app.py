@@ -4,28 +4,35 @@ from dash import dcc
 import plotly.graph_objs as go
 import plotly.express as px
 import pandas as pd
+import plotly.io as pio
+from dash_bootstrap_templates import load_figure_template
 
-app = Dash(__name__, external_stylesheets=['./css/style.css'])
+pio.templates.default = 'plotly_white'
+load_figure_template(["lux", "cyborg", "minty", "pulse"])
+
+app = Dash(__name__, external_stylesheets=[
+           './css/style.css'])
 
 sidebar = html.Div([
     html.Div([
         html.Div([
             html.Img(src="./assets/images/Analytics.png",
                      className="sidebar__img")
-        ], style={"width": "30%"}),
-        html.Div([html.Span("DASHBOARD", style={"display": "block"}),
-                  html.Span("Medidor de Cascão", style={"display": "block"})],
-                 className="sidebar__topLine__span")
+        ], style={"width": "30%", "display": "flex"}),
+        html.Div([html.Span("DASHBOARD", style={"display": "block"},
+                 className="sidebar__topLine__span"),
+                  html.Span("Medidor de Cascão", style={"display": "block"},
+                 className="sidebar__topLine__span")])
     ], className="sidebar__topLine"),
     html.Div(
-        [html.Span("Painel de controle")], className="sidebar__title", style={"text-align": "center"}),
+        [html.Span("Painel de controle", className="sidebar__title")], style={"text-align": "center", "margin": "3% 0"}),
     html.Div(
         [html.Img(src="./assets/images/lupa.png",
                   className="sidebar__img")], className="sidebar__lupa"),
     html.Div(
-        [html.Img(src="./assets/images/lapis.png",
-                  style={"width": "9%"}), html.Button(
-            "Iniciar Segmentação", className="sidebar__button__fonts")], className="sidebar__button sidebar__button__box"),
+        [html.Button([html.Img(src="./assets/images/lapis.png",
+                               style={"width": "10%", "display": "inline-block", "padding-right ": "50%"}),
+                     html.Span("Iniciar Segmentação", className="sidebar__button__fonts")], className="sidebar__button")], style={"width": "74.74%"}),
     html.Div(
         [html.Img(src="./assets/images/oficinaC.png",
                   className="sidebar__img")], className="sidebar__logo", style={"height": "5%"}),
@@ -47,7 +54,7 @@ card2 = html.Div([
 
 df = px.data.gapminder().query("country=='Canada'")
 fig = px.line(df, x="year", y="lifeExp",
-              title='Life expectancy in Canada', color='country', symbol="country")
+              title='Life expectancy in Canada', color='country', symbol="country", template="lux")
 
 card3 = html.Div([
     dcc.Graph(id='my-graph', figure=fig, responsive=True,
