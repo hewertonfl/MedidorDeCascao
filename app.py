@@ -47,7 +47,8 @@ sidebar = html.Div([
 
 
 card1 = html.Div([
-    html.Img(src="./assets/images/youtube.png")
+    html.Img(src="./assets/images/youtube.png",
+             style={"max-width": "100%", "max-height": "100%"})
 ], className="card")
 
 # Medidor
@@ -72,14 +73,14 @@ fig = html.Div([
 
 card2 = html.Div([
     html.Div([
-        html.H2("Diâmetro Máximo:"),
+        html.H2("Diâmetro Máximo [mm]:"),
         daq.LEDDisplay(
             id="operator-led",
             value="1704",
             color="#92e0d3",
             backgroundColor="#1e2130",
             size=20,
-        )]), fig,
+        )], className="diam"), fig,
 
 ], className="card")
 
@@ -88,6 +89,11 @@ df = px.data.gapminder().query("country=='Canada'")
 fig = px.line(df, x="year", y="lifeExp",
               title='Life expectancy in Canada', color='country', symbol="country", template="lux")
 
+fig.update_layout({
+    "plot_bgcolor": "rgba(0, 0, 0, 0)",
+    "paper_bgcolor": "rgba(0, 0, 0, 0)",
+})
+
 card3 = html.Div([
     dcc.Graph(id='my-graph', figure=fig, responsive=True,
               style={"width": "100%", "height": "100%"})
@@ -95,8 +101,9 @@ card3 = html.Div([
 
 main = html.Div([
     html.Div([card1, card2], style={
-             "display": "flex", "height": "60%", "justify-content": "space-between"}),
-    card3
+             "display": "flex", "height": "60%", "width": "100%", "justify-content": "space-between", "padding": "1% 0 0", "box-sizing": "border-box"}),
+    html.Div(card3, style={"height": "40%",
+             "padding": "1% 0", "box-sizing": "border-box"})
 ], className="main")
 
 app.layout = html.Div([
