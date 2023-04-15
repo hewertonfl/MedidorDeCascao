@@ -6,6 +6,7 @@ import plotly.express as px
 import pandas as pd
 import plotly.io as pio
 from dash_bootstrap_templates import load_figure_template
+import dash_daq as daq
 
 pio.templates.default = 'plotly_white'
 load_figure_template(["lux", "cyborg", "minty", "pulse"])
@@ -19,7 +20,7 @@ sidebar = html.Div([
             html.Img(src="./assets/images/Analytics.png",
                      className="sidebar__img")
         ], style={"width": "30%", "display": "flex"}),
-        html.Div([html.Span("DASHBOARD", style={"display": "block"},
+        html.Div([html.Span("DASHBOARD -", style={"display": "block"},
                  className="sidebar__topLine__span"),
                   html.Span("Medidor de Cascão", style={"display": "block"},
                  className="sidebar__topLine__span")])
@@ -48,10 +49,41 @@ sidebar = html.Div([
 card1 = html.Div([
     html.Img(src="./assets/images/youtube.png")
 ], className="card")
+
+# Medidor
+layout = dict(plot_bgcolor='rgba(0,0,0,0)', paper_bgcolor='rgba(0,0,0,0)')
+fig = html.Div([
+    dcc.Graph(figure=go.Figure(go.Indicator(
+        value=75,
+        mode="gauge+number+delta",
+        title={'text': "Diâmetro [mm]"},
+        delta={'reference': 40, "suffix": "mm"},
+        gauge={'axis': {'range': [40, 80]},
+               'steps': [
+            {'range': [40, 50], 'color': "greenyellow"},
+            {'range': [50, 60], 'color': "yellow"},
+            {'range': [60, 70], 'color': "orange"},
+            {'range': [70, 80], 'color': "red"}],
+            'threshold': {'line': {'color': "black", 'width': 8}, 'thickness': 0.75, 'value': 70},
+            'bar': {'color': "darkblue"},
+        }), layout=layout),
+        style={"height": "100%", "width": "100%", "display": "block"}),
+], style={"display": "flex", "width": "100%", "justify-content": "center"})
+
 card2 = html.Div([
-    html.Img(src="./assets/images/card2a.png", className="sidebar__img")
+    html.Div([
+        html.H2("Diâmetro Máximo:"),
+        daq.LEDDisplay(
+            id="operator-led",
+            value="1704",
+            color="#92e0d3",
+            backgroundColor="#1e2130",
+            size=20,
+        )]), fig,
+
 ], className="card")
 
+# DataFrame
 df = px.data.gapminder().query("country=='Canada'")
 fig = px.line(df, x="year", y="lifeExp",
               title='Life expectancy in Canada', color='country', symbol="country", template="lux")
