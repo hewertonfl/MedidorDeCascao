@@ -7,6 +7,7 @@ import pandas as pd
 import plotly.io as pio
 from dash_bootstrap_templates import load_figure_template
 import dash_daq as daq
+from dash_extensions import WebSocket
 
 pio.templates.default = 'plotly_white'
 load_figure_template(["lux", "cyborg", "minty", "pulse"])
@@ -46,10 +47,11 @@ sidebar = html.Div([
 ], className="sidebar")
 
 
-card1 = html.Div([
-    html.Img(src="./assets/images/youtube.png",
-             style={"max-width": "100%", "max-height": "100%"})
-], className="card")
+card1 = html.Div(
+    #    html.Img(src="./assets/images/youtube.png",
+    [html.Img(style={"width": "100%", "max-height": "100%"}, id=f"v{i}") for i in range(1)] +
+    [WebSocket(
+        url=f"ws://127.0.0.1:5000/stream{i}", id=f"ws{i}") for i in range(1)], className="card")
 
 # Medidor
 layout = dict(plot_bgcolor='rgba(0,0,0,0)', paper_bgcolor='rgba(0,0,0,0)')
@@ -113,22 +115,11 @@ app.layout = html.Div([
 ], className="container")
 
 
-# @app.callback(
-#     Output('my-graph', 'figure'),
-#     Input('dropdown', 'value')
-
-# )
-# def update_side_graph(input_data):
-#     grafico = {
-#         'data': [{'x': [1, 2, 3], 'y': [4, 1, 2], 'name':'Gráfico X'}],
-#         'layout': {
-#             'title': 'Dash Data Visualization'
-#         }
-#     }
-#     return grafico
-
+for i in range(1):
+    app.clientside_callback("function(m){return m? m.data : '';}", Output(
+        f"v{i}", "src"), Input(f"ws{i}", "message"))
 
 if __name__ == '__main__':
-    port = "8050"
+    port = "8000"
     print(f"Server rodando em http://127.0.0.1:{port}")
     app.run_server(debug=True, host="0.0.0.0", port=port)
