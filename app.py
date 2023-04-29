@@ -33,7 +33,7 @@ sidebar = html.Div([
                   className="sidebar__img")], className="sidebar__lupa"),
     html.Div(
         [html.Button([html.Img(src="./assets/images/lapis.png",
-                               style={"width": "10%", "display": "inline-block", "padding-right ": "50%"}),
+                               style={"width": "10%", "display": "inline-block", "padding-right ": "50%", "margin-right": "3%"}),
                      html.Span("Iniciar Segmentação", className="sidebar__button__fonts")], className="sidebar__button")], style={"width": "74.74%"}),
     html.Div(
         [html.Img(src="./assets/images/oficinaC.png",
@@ -48,10 +48,10 @@ sidebar = html.Div([
 
 
 card1 = html.Div(
-    #    html.Img(src="./assets/images/youtube.png",
-    [html.Img(style={"width": "100%", "max-height": "100%"}, id=f"v{i}") for i in range(1)] +
-    [WebSocket(
-        url=f"ws://127.0.0.1:5000/stream{i}", id=f"ws{i}") for i in range(1)], className="card")
+    html.Img(src="./assets/images/youtube.png",), className="card")
+# [html.Img(style={"width": "100%", "max-height": "100%"}, id=f"v{i}") for i in range(1)] +
+# [WebSocket(
+#     url=f"ws://127.0.0.1:5000/stream{i}", id=f"ws{i}") for i in range(1)], className="card")
 
 # Medidor
 layout = dict(plot_bgcolor='rgba(0,0,0,0)', paper_bgcolor='rgba(0,0,0,0)')
@@ -69,7 +69,8 @@ fig = html.Div([
             {'range': [70, 80], 'color': "red"}],
             'threshold': {'line': {'color': "black", 'width': 8}, 'thickness': 0.75, 'value': 70},
             'bar': {'color': "darkblue"},
-        }), layout=layout),
+        }),
+        layout=layout),
         style={"height": "100%", "width": "100%", "display": "block"}),
 ], style={"display": "flex", "width": "100%", "justify-content": "center"})
 
@@ -103,9 +104,9 @@ card3 = html.Div([
 
 main = html.Div([
     html.Div([card1, card2], style={
-             "display": "flex", "height": "60%", "width": "100%", "justify-content": "space-between", "padding": "1% 0 0", "box-sizing": "border-box"}),
+             "display": "flex", "height": "60%", "width": "100%", "justify-content": "space-between", "padding": "2% 0 0", "box-sizing": "border-box"}),
     html.Div(card3, style={"height": "40%",
-             "padding": "1% 0", "box-sizing": "border-box"})
+             "padding": "2% 0", "box-sizing": "border-box"})
 ], className="main")
 
 app.layout = html.Div([
@@ -115,9 +116,9 @@ app.layout = html.Div([
 ], className="container")
 
 
-for i in range(1):
-    app.clientside_callback("function(m){return m? m.data : '';}", Output(
-        f"v{i}", "src"), Input(f"ws{i}", "message"))
+# for i in range(1):
+#     app.clientside_callback("function(m){return m? m.data : '';}", Output(
+#         f"v{i}", "src"), Input(f"ws{i}", "message"))
 
 if __name__ == '__main__':
     port = "8000"
