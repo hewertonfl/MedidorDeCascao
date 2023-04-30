@@ -4,6 +4,7 @@ body {
     margin: 0;
     padding: 0;
     background-color: #2d2d2d;
+    overflow: hidden;
 }
 ul {
     list-style: none;
@@ -44,7 +45,7 @@ span {
 .sidebar {
     box-sizing: border-box;
     background: linear-gradient(
-        45deg,
+        30deg,
         rgba(122, 208, 91, 0.1) 20%,
         rgba(122, 208, 91, 1) 90%
     );
@@ -75,10 +76,10 @@ span {
 .sidebar__topLine__span {
     display: block;
     margin-left: 4.3%;
-    font-size: 100%;
     color: white;
-    text-shadow: 2px 2px 2px #2d2d2d;
+    text-shadow: 2px 2px 4px #2d2d2d;
     width: 100%;
+    font-size: calc(1600vw / 1920);
 }
 .sidebar__button {
     background: #38453b;
@@ -91,6 +92,8 @@ span {
     padding: 1rem;
     transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
         border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+.sidebar__button span {
     font-size: calc(1920 * 0.75vw / 1920);
     font-family: 'Inter';
     color: white;
@@ -99,9 +102,10 @@ span {
 .sidebar__button:hover {
     cursor: pointer;
     color: rgba(122, 208, 91, 1);
+    background: #28312b;
 }
 .sidebar__button:active {
-    background: #28312b;
+    background: #141815;
     cursor: pointer;
     border: 2px solid green;
 }
@@ -160,6 +164,7 @@ span {
 .card:nth-child(1) {
     justify-content: center;
     width: 65%;
+    box-sizing: border-box;
 }
 .card:nth-child(2) {
     padding: 2%;
@@ -167,12 +172,13 @@ span {
 
 .diam {
     width: 100%;
-    box-sizing: border-box;
+    height: 10%;
 }
 .card:nth-child(2) div h2 {
     font-family: 'Inter';
-    letter-spacing: 2px;
+    letter-spacing: 1.5px;
     opacity: 80%;
+    font-size: calc(2100vw / 1920);
 }
 
 .card2 {

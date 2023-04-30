@@ -48,7 +48,8 @@ sidebar = html.Div([
 
 
 card1 = html.Div(
-    html.Img(src="./assets/images/youtube.png",), className="card")
+    [#html.Span("Imagem Segmentada", style={"display":"block"}),
+    html.Img(src="./assets/images/youtube.png",style={"max-width":"100%","max-height":"100%","display":"block"})], className="card")
 # [html.Img(style={"width": "100%", "max-height": "100%"}, id=f"v{i}") for i in range(1)] +
 # [WebSocket(
 #     url=f"ws://127.0.0.1:5000/stream{i}", id=f"ws{i}") for i in range(1)], className="card")
@@ -71,7 +72,7 @@ fig = html.Div([
             'bar': {'color': "darkblue"},
         }),
         layout=layout),
-        style={"height": "100%", "width": "100%", "display": "block"}),
+        style={"max-height": "100%", "width": "100%", "display": "block","overflow":"hidden"}),
 ], style={"display": "flex", "width": "100%", "justify-content": "center"})
 
 card2 = html.Div([
