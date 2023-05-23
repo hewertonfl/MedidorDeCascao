@@ -158,7 +158,9 @@ span {
     display: flex;
     justify-content: flex-start;
     background-color: #ffffff;
-    flex-wrap: wrap;
+    /* flex-wrap: wrap; */
+    flex-direction: column;
+    justify-content: center;
 }
 
 .card:nth-child(1) {
@@ -174,7 +176,8 @@ span {
     width: 100%;
     height: 10%;
 }
-.card:nth-child(2) div h2 {
+.card:nth-child(2) div h2,
+.card:nth-child(1) h2 {
     font-family: 'Inter';
     letter-spacing: 1.5px;
     opacity: 80%;
@@ -190,4 +193,19 @@ span {
     display: flex;
     justify-content: center;
     background-color: #f9f9f9;
+}
+
+.main__c1c2 {
+    display: flex;
+    height: 60%;
+    width: 100%;
+    justify-content: space-between;
+    padding: 2% 0 0;
+    box-sizing: border-box;
+}
+
+.main__c3 {
+    height: 40%;
+    padding: 2% 0;
+    box-sizing: border-box;
 }
