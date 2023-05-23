@@ -9,6 +9,8 @@ from dash_bootstrap_templates import load_figure_template
 import dash_daq as daq
 from dash_extensions import WebSocket
 
+from customDataframe import *
+
 pio.templates.default = 'plotly_white'
 load_figure_template(["lux", "cyborg", "minty", "pulse"])
 
@@ -95,23 +97,24 @@ card2 = html.Div([
                 value="1704",
                 color="#92e0d3",
                 backgroundColor="#1e2130",
-                size=20)], style={"display": "block", "height": "15%", }),
+                size=20)], style={"display": "block", "height": "15%", }, id='display'),
         html.Div([
-            dcc.Graph(figure=go.Figure(go.Indicator(
-                value=75,
-                mode="gauge+number+delta",
-                title={'text': "Diâmetro [mm]"},
-                delta={'reference': 40, "suffix": "mm"},
-                gauge={'axis': {'range': [40, 80]},
-                      'steps': [
-                    {'range': [40, 50], 'color': "greenyellow"},
-                    {'range': [50, 60], 'color': "yellow"},
-                    {'range': [60, 70], 'color': "orange"},
-                    {'range': [70, 80], 'color': "red"}],
-                    'threshold': {'line': {'color': "black", 'width': 8}, 'thickness': 0.75, 'value': 70},
-                    'bar': {'color': "darkblue"},
-                }),
-                layout=layout),
+            dcc.Graph(
+                figure=go.Figure(go.Indicator(
+                    value=75,
+                    mode="gauge+number+delta",
+                    title={'text': "Diâmetro [mm]"},
+                    delta={'reference': 40, "suffix": "mm"},
+                    gauge={'axis': {'range': [40, 80]},
+                           'steps': [
+                        {'range': [40, 50], 'color': "greenyellow"},
+                        {'range': [50, 60], 'color': "yellow"},
+                        {'range': [60, 70], 'color': "orange"},
+                        {'range': [70, 80], 'color': "red"}],
+                        'threshold': {'line': {'color': "black", 'width': 8}, 'thickness': 0.75, 'value': 70},
+                        'bar': {'color': "darkblue"},
+                    }),
+                    layout=layout),
                 responsive=True,
                 style={"width": "100%", "overflow": "hidden", "height": "18.22vw", "display": "block"}),
         ], style={"display": "flex", "width": "100%", "height": "70%", "margin": "auto 0"})
@@ -119,20 +122,10 @@ card2 = html.Div([
 
 ], className="card", style={"height": "100%"})
 
-# Leitura do dataframe para geração dos gráficos
-df = px.data.gapminder().query("country=='Canada'")
-fig = px.line(df, x="year", y="lifeExp",
-              title='Life expectancy in Canada', color='country', symbol="country", template="lux")
-
-fig.update_layout({
-    "plot_bgcolor": "rgba(0, 0, 0, 0)",
-    "paper_bgcolor": "rgba(0, 0, 0, 0)",
-})
-
 # Terceiro Card
 card3 = html.Div([
-    dcc.Graph(id='my-graph', figure=fig, responsive=True,
-              style={"width": "100%", "height": "100%"})
+    dcc.Graph(id='measure_chart', responsive=True,
+              style={"width": "100%", "height": "100%"}),
 ], className="card2 sidebar__img")
 
 # Montagem do cards
@@ -150,13 +143,43 @@ app.layout = html.Div([
     html.Div([
         sidebar, main
     ], className="desktop"),
+    dcc.Interval(id='interval_component', n_intervals=0, interval=1*1000)
 ], className="container")
 
 # Callback para exibição do video por servidor
 app.clientside_callback("function(m){return m? m.data : '';}", Output(
     "v1", "src"), Input("ws", "message"))
 
+
+@app.callback(Output('measure_chart', 'figure'),
+              Input('interval_component', 'n_intervals'))
+def update_graph(n):
+    create_dataframe()
+    df = pd.read_csv('./assets/medicao.csv').tail(10)
+
+    fig = px.line(df, x="Tempo [s]", y="Diâmetro [mm]",
+                  title='Medição', template="lux", markers=True)
+
+    fig.update_layout({
+        "plot_bgcolor": "rgba(0, 0, 0, 0)",
+        "paper_bgcolor": "rgba(0, 0, 0, 0)",
+    })
+    return fig
+
+# @app.callback(Output('display', 'children'),
+#               Input('interval_component', 'n_intervals'))
+
+# def update_display(n):
+#     daq = daq.LEDDisplay(
+#                 id="operator-led",
+#                 value="1704",
+#                 color="#92e0d3",
+#                 backgroundColor="#1e2130",
+#                 size=20)
+#     return
+
+
 if __name__ == '__main__':
     port = "8000"
     print(f"Server rodando em http://127.0.0.1:{port}")
-    app.run_server(debug=True, host="0.0.0.0", port=port)
+    app.run_server(debug=False, host="0.0.0.0", port=port)

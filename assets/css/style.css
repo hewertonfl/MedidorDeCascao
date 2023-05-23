@@ -49,11 +49,6 @@ span {
         rgba(122, 208, 91, 0.1) 20%,
         rgba(122, 208, 91, 1) 90%
     );
-    /* background: linear-gradient(
-        0deg,
-        rgba(241, 241, 241, 1) 0%,
-        rgb(98, 195, 63) 30%
-    ); */
     width: 25%;
     height: 100%;
     padding: 1%;
@@ -158,7 +153,6 @@ span {
     display: flex;
     justify-content: flex-start;
     background-color: #ffffff;
-    /* flex-wrap: wrap; */
     flex-direction: column;
     justify-content: center;
 }
