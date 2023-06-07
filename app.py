@@ -86,37 +86,24 @@ card1 = html.Div([
     className="card", style={"padding": "1.04%", "height": "100%"})
 
 # Segundo Card
+global diamMax
+diamMax = 0
+
 layout = dict(plot_bgcolor='rgba(0,0,0,0)', paper_bgcolor='rgba(0,0,0,0)')
 card2 = html.Div([
     html.Div([
         html.Div(html.H2("Diâmetro Máximo [mm]:", style={
-                 "margin": "auto 0", "width": "100%"}), style={"height": "auto", "display": "block"}),
+                 "margin": "auto 0", "width": "100%", "padding-bottom": "0.4%"}), style={"height": "auto", "display": "block", "padding-bottom": "3%"}),
         html.Div(
             [daq.LEDDisplay(
-                id="operator-led",
-                value="1704",
                 color="#92e0d3",
                 backgroundColor="#1e2130",
-                size=20)], style={"display": "block", "height": "15%", }, id='display'),
+                id='display',
+                size=20)], style={"display": "block", "height": "15%"}),
         html.Div([
             dcc.Graph(
-                figure=go.Figure(go.Indicator(
-                    value=75,
-                    mode="gauge+number+delta",
-                    title={'text': "Diâmetro [mm]"},
-                    delta={'reference': 40, "suffix": "mm"},
-                    gauge={'axis': {'range': [40, 80]},
-                           'steps': [
-                        {'range': [40, 50], 'color': "greenyellow"},
-                        {'range': [50, 60], 'color': "yellow"},
-                        {'range': [60, 70], 'color': "orange"},
-                        {'range': [70, 80], 'color': "red"}],
-                        'threshold': {'line': {'color': "black", 'width': 8}, 'thickness': 0.75, 'value': 70},
-                        'bar': {'color': "darkblue"},
-                    }),
-                    layout=layout),
                 responsive=True,
-                style={"width": "100%", "overflow": "hidden", "height": "18.22vw", "display": "block"}),
+                style={"width": "100%", "overflow": "hidden", "height": "18.22vw", "display": "block"}, id='gauge'),
         ], style={"display": "flex", "width": "100%", "height": "70%", "margin": "auto 0"})
     ]),
 
@@ -143,7 +130,7 @@ app.layout = html.Div([
     html.Div([
         sidebar, main
     ], className="desktop"),
-    dcc.Interval(id='interval_component', n_intervals=0, interval=1*1000)
+    dcc.Interval(id='interval_component', n_intervals=0, interval=1000)
 ], className="container")
 
 # Callback para exibição do video por servidor
@@ -152,10 +139,12 @@ app.clientside_callback("function(m){return m? m.data : '';}", Output(
 
 
 @app.callback(Output('measure_chart', 'figure'),
+              Output('display', 'value'),
+              Output('gauge', 'figure'),
               Input('interval_component', 'n_intervals'))
 def update_graph(n):
     create_dataframe()
-    df = pd.read_csv('./assets/medicao.csv').tail(10)
+    df = pd.read_csv('./assets/medicao.csv').tail(20)
 
     fig = px.line(df, x="Tempo [s]", y="Diâmetro [mm]",
                   title='Medição', template="lux", markers=True)
@@ -164,22 +153,34 @@ def update_graph(n):
         "plot_bgcolor": "rgba(0, 0, 0, 0)",
         "paper_bgcolor": "rgba(0, 0, 0, 0)",
     })
-    return fig
+    try:
+        value = df["Diâmetro [mm]"].max()
+        diametro = df["Diâmetro [mm]"].iat[-1]
+    except Exception as e:
+        print(e)
+        value = 0
+        diametro = 0
+        pass
 
-# @app.callback(Output('display', 'children'),
-#               Input('interval_component', 'n_intervals'))
+    gauge = go.Figure(go.Indicator(
+        value=diametro,
+        mode="gauge+number+delta",
+        title={'text': "Diâmetro [mm]"},
+        delta={'reference': 40, "suffix": "mm"},
+        gauge={'axis': {'range': [40, 80]},
+               'steps': [
+            {'range': [40, 50], 'color': "greenyellow"},
+            {'range': [50, 60], 'color': "yellow"},
+            {'range': [60, 70], 'color': "orange"},
+            {'range': [70, 80], 'color': "red"}],
+            'threshold': {'line': {'color': "black", 'width': 8}, 'thickness': 0.75, 'value': 70},
+            'bar': {'color': "darkblue"},
+        }),
+        layout=layout)
 
-# def update_display(n):
-#     daq = daq.LEDDisplay(
-#                 id="operator-led",
-#                 value="1704",
-#                 color="#92e0d3",
-#                 backgroundColor="#1e2130",
-#                 size=20)
-#     return
+    return fig, value, gauge
 
 
 if __name__ == '__main__':
     port = "8000"
-    print(f"Server rodando em http://127.0.0.1:{port}")
     app.run_server(debug=False, host="0.0.0.0", port=port)

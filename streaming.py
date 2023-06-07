@@ -33,6 +33,12 @@ class VideoCamera(object):
     def get_frame(self):
 
         success, image = self.video.read()
+        # Parâmetros de redimensionamento
+        scale_percent = 50
+        width = int(image.shape[1] * scale_percent / 100)
+        height = int(image.shape[0] * scale_percent / 100)
+        dim = (width, height)
+        image = cv2.resize(image,dim,interpolation = cv2.INTER_AREA)
 
         results = model(image,stream=True,verbose=False)
         for result in results:
@@ -47,21 +53,16 @@ class VideoCamera(object):
                 # Cálculo dos pontos e distância entre os pontos
                 p1,p2,d = self.calc_greater_distance(mask)
                 position= p1[0],p1[1]-10
+                d= int(d*0.6)
                 distancia = str(d) +" mm"
 
                 # Obtenção do tempo
                 currentTime = datetime.now().strftime("%H:%M:%S")
                 create_dataframe(currentTime,d)
 
-                # Parâmetros de redimensionamento
-                scale_percent = 50
-                width = int(image.shape[1] * scale_percent / 100)
-                height = int(image.shape[0] * scale_percent / 100)
-                dim = (width, height)
-
                 annotated_frame = cv2.line(annotated_frame, p2,p1, (0, 255, 0) ,9)
                 annotated_frame = cv2.putText(annotated_frame, distancia, position ,cv2.FONT_HERSHEY_SIMPLEX,1,(0, 255, 0),3,cv2.LINE_AA )
-                annotated_frame = cv2.resize(annotated_frame,dim,interpolation = cv2.INTER_AREA)
+                
             except Exception as e:
                 print(e)
                 pass
@@ -80,7 +81,7 @@ async def stream(camera, delay=None):
 
 @server.websocket("/stream0")
 async def stream0():
-    camera = VideoCamera("C:\\Users\\hewer\\OneDrive\\Área de Trabalho\\Medidor de cascão\\video_cascao\\CortadoDSC_0005.mp4")
+    camera = VideoCamera("C:\\Users\\hewer\\OneDrive\\Área de Trabalho\\Medidor de cascão\\video_cascao\\CortadoDSC_0008.mp4")
     await stream(camera)
 
 if __name__ == '__main__':
