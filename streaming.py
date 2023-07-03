@@ -12,7 +12,7 @@ from ultralytics import YOLO
 from customDataframe import *
 from datetime import datetime
 
-model = YOLO('C:\\Users\\hewer\\OneDrive\\Área de Trabalho\\Medidor de cascão\\video_cascao\\best.pt') 
+model = YOLO('./yolov8n-seg.pt') 
 class VideoCamera(object):
     def __init__(self, video_path):
         self.video = cv2.VideoCapture(video_path)
@@ -31,16 +31,17 @@ class VideoCamera(object):
         return p1,p2,greater_distance
 
     def get_frame(self):
-
         success, image = self.video.read()
+        annotated_frame = image
         # Parâmetros de redimensionamento
         scale_percent = 50
         width = int(image.shape[1] * scale_percent / 100)
         height = int(image.shape[0] * scale_percent / 100)
         dim = (width, height)
         image = cv2.resize(image,dim,interpolation = cv2.INTER_AREA)
+        annotated_frame = image
 
-        results = model(image,stream=True,verbose=False)
+        results = model(image,device=0,stream=True,verbose=False)
         for result in results:
             try:
                 #Obtenção das mascaras
@@ -64,7 +65,7 @@ class VideoCamera(object):
                 annotated_frame = cv2.putText(annotated_frame, distancia, position ,cv2.FONT_HERSHEY_SIMPLEX,1,(0, 255, 0),3,cv2.LINE_AA )
                 
             except Exception as e:
-                print(e)
+                print("Erro no try: ", e)
                 pass
 
         _, jpeg = cv2.imencode('.jpg', annotated_frame)
@@ -81,7 +82,7 @@ async def stream(camera, delay=None):
 
 @server.websocket("/stream0")
 async def stream0():
-    camera = VideoCamera("C:\\Users\\hewer\\OneDrive\\Área de Trabalho\\Medidor de cascão\\video_cascao\\CortadoDSC_0008.mp4")
+    camera = VideoCamera(0)
     await stream(camera)
 
 if __name__ == '__main__':
